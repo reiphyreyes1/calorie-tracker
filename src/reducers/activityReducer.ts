@@ -1,37 +1,42 @@
 import { Activity } from "../types"
 
-export interface ActivityActions {
-    type: "SAVE_ACTIVITY" | "DELETE_ACTIVITY";
-    payload: {
-        newActivity: Activity
-    };
-}
+export type ActivityActions =
+    | { type: "save-activity", payload: { newActivity: Activity } }
+    | { type: "set-activeId", payload: { id: Activity["id"] } }
 
-interface ActivityState {
+
+export interface ActivityState {
     activities: Activity[]
+    activeId: Activity["id"]
 }
 
 export const initialState: ActivityState = {
-    activities: []
+    activities: [],
+    activeId: ""
 }
 
 export const activityReducer = (
     state: ActivityState = initialState,
     action: ActivityActions
-): ActivityState => {
-    switch (action.type) {
-        case "SAVE_ACTIVITY":
+) => {
 
-            return {
-                ...state,
-                activities: [...state.activities, action.payload.newActivity]
-            };
+    if (action.type == "save-activity") {
 
-        case "DELETE_ACTIVITY":
-            return {
-                activities: state.activities.filter(activity => activity.name !== action.payload.newActivity.name)
-            }
+        let updatedActivities: Activity[] = [];
 
-        default: return state;
+        if (state.activeId) {
+            updatedActivities = state.activities.map(item => item.id === state.activeId ? action.payload.newActivity : item);
+        } else {
+            updatedActivities = [...state.activities, action.payload.newActivity];
+        }
+
+        return {
+            ...state,
+            activities: updatedActivities
+        };
     }
+
 }
+
+
+

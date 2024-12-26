@@ -1,12 +1,13 @@
-import { ChangeEvent, Dispatch, FormEvent, useReducer, useState } from 'react'
+import { ChangeEvent, Dispatch, FormEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { categories } from '../data/category'
-import { Activity } from '../types'
-import { ActivityActions } from '../reducers/activityReducer';
+import type { Activity } from '../types'
+import { ActivityActions, ActivityState } from '../reducers/activityReducer';
 
 interface Props {
-    dispatch: Dispatch<ActivityActions>;
+    dispatch: Dispatch<ActivityActions>
+    state: ActivityState
 }
 
 const initialState: Activity = {
@@ -16,10 +17,17 @@ const initialState: Activity = {
     calories: 0
 }
 
-function Form({ dispatch }: Props) {
+function Form({ dispatch, state }: Props) {
 
     const [activity, setActivity] = useState<Activity>(initialState)
 
+    useEffect(() => {
+        if(state.activeId){
+            const selectedActivity = state.activities.filter(item => item.id === state.activeId)[0];
+            setActivity(selectedActivity);
+        }
+
+    }, [state.activeId])
 
     const handleChange = (event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
         const IsNumberField = ['category', 'calories'].includes(event.target.id);
@@ -39,10 +47,14 @@ function Form({ dispatch }: Props) {
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        dispatch({ type: "SAVE_ACTIVITY", payload: { newActivity: activity } });
+        dispatch({ type: "save-activity", payload: { newActivity: activity } });
 
         setActivity({ ...initialState, id: uuidv4() })
     }
+
+    useEffect(() => {
+
+    }, [activity]);
 
     return (
         <form

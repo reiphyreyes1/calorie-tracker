@@ -25,6 +25,7 @@ function App() {
         >
           <Form
             dispatch={dispatch}
+            state={state}
           />
         </div>
       </section>
@@ -34,6 +35,7 @@ function App() {
       >
         <ActivityList
           activities={state.activities}
+          dispatch={dispatch}
         />
       </section>
     </>

@@ -1,6 +1,5 @@
 import { ChangeEvent, Dispatch, FormEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-
 import { categories } from '../data/category'
 import type { Activity } from '../types'
 import { ActivityActions, ActivityState } from '../reducers/activityReducer';
@@ -9,7 +8,6 @@ interface Props {
     dispatch: Dispatch<ActivityActions>
     state: ActivityState
 }
-
 const initialState: Activity = {
     id: uuidv4(),
     category: 1,
@@ -18,11 +16,10 @@ const initialState: Activity = {
 }
 
 function Form({ dispatch, state }: Props) {
-
     const [activity, setActivity] = useState<Activity>(initialState)
 
     useEffect(() => {
-        if(state.activeId){
+        if (state.activeId) {
             const selectedActivity = state.activities.filter(item => item.id === state.activeId)[0];
             setActivity(selectedActivity);
         }
@@ -120,7 +117,7 @@ function Form({ dispatch, state }: Props) {
                 type="submit"
                 value={activity.category === 1 ? 'Guardar comida' : 'Guardar ejercicio'}
                 className='bg-gray-800 hover:bg-gray-900 px-5 p-2
-                text-white w-full font-bold uppercase rounded-lg cursor-pointer disabled:opacity-10'
+                text-white w-full font-bold uppercase rounded-lg cursor-pointer disabled:opacity-10 disabled:cursor-not-allowed'
                 disabled={!isValidActivity()}
             />
         </form>
